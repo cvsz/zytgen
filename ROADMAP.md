@@ -10,6 +10,7 @@ This roadmap is outcome-based. Dates are intentionally omitted until team capaci
 - [x] approve architecture, security model, and domain boundaries;
 - [x] define repository structure and implementation sequence;
 - [x] establish coding standards, CI quality gates, dependency audit, and secret scanning;
+- [x] consolidate `zadsystem` domain concepts into a typed, deterministic Ads Intelligence package;
 - [ ] add typed runtime configuration, structured logging, health/readiness, and local infrastructure test environment;
 - [ ] record the initial dependency lockfile from a registry-backed install;
 - [ ] add ADRs for material technology and infrastructure choices.
@@ -45,6 +46,8 @@ This roadmap is outcome-based. Dates are intentionally omitted until team capaci
 
 **Outcome:** teams can turn external signals into prioritized content plans.
 
+- [x] deterministic ad hook, angle, CTA, gap, and creative-plan domain foundation;
+- Meta Ad Library adapter with pagination, retry, rate limits, provenance, and policy controls;
 - trend-source ingestion and normalization;
 - competitor profile and public-content tracking within platform policies;
 - hook vault, tagging, semantic search, and performance context;

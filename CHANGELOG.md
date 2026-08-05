@@ -8,6 +8,11 @@ The format is based on Keep a Changelog, and the project will use semantic versi
 
 ### Added
 
+- Typed `@zytgen/ads-intelligence` package consolidated from the reusable domain concepts in `cvsz/zadsystem`.
+- Source-backed ad records and a Meta Ad Library connector port.
+- Deterministic hook, angle, CTA, and brand-versus-competitor gap analysis.
+- Twenty-angle creative planning catalog with human approval and claim-evidence requirements.
+- Consolidation decision and validation records for retiring the standalone `zadsystem` repository.
 - pnpm monorepo with web, API/BFF, worker, and shared-contract package boundaries.
 - Shared TypeScript compiler baseline and independently buildable workspace packages.
 - ESLint, Prettier, type-check, build, and Node test-runner quality gates.
@@ -24,5 +29,7 @@ The format is based on Keep a Changelog, and the project will use semantic versi
 
 ### Changed
 
+- Designated `zytgen` as the surviving platform repository and `zadsystem` as a retired source prototype after consolidation.
+- Removed random performance metrics and unsupported claims from the migrated Ads Intelligence design.
 - Advanced the repository status from documentation-only planning to a buildable repository/CI foundation.
 - Expanded the repository purpose from a YouTube-only generator to the broader `zytgen` Content OS while retaining YouTube as the first publishing connector.
