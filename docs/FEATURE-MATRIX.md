@@ -4,7 +4,7 @@ Status values: `planned`, `foundation`, `in-progress`, `beta`, `production`.
 
 | Domain | Capability | Status | Target phase | Completion evidence |
 |---|---|---:|---:|---|
-| Platform | Repository/CI scaffold | planned | 0 | local bootstrap and green CI |
+| Platform | Repository/CI scaffold | foundation | 0 | `docs/validation/slice-001.md` and green CI |
 | Platform | Typed configuration and health | planned | 0 | startup validation and readiness tests |
 | Identity | Organizations and workspaces | planned | 1 | CRUD, membership and isolation tests |
 | Identity | RBAC and service accounts | planned | 1 | policy matrix and negative authorization tests |

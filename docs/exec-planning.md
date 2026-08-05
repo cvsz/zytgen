@@ -2,6 +2,11 @@
 
 This document converts the product roadmap into an implementation workflow for contributors and coding agents.
 
+## Current execution state
+
+- Slice 001 — Repository and CI scaffold: **foundation implemented**, pending merged CI evidence.
+- Next slice: Slice 002 — Runtime configuration and health.
+
 ## Operating rules
 
 1. Revalidate the repository and open work before editing.
@@ -40,11 +45,15 @@ A slice is done only when:
 - API/schema documentation and feature matrix are updated;
 - CI is green and the pull request contains validation evidence.
 
+Requirements that do not apply to a foundation-only slice must be recorded explicitly in its validation record rather than silently omitted.
+
 ## Recommended implementation sequence
 
 ### Slice 001 — Repository and CI scaffold
 
 Create workspace layout, package manager configuration, formatting, linting, type checking, unit-test harness, commit conventions, dependency scanning, secret scanning, and baseline CI.
+
+Validation: `docs/validation/slice-001.md`.
 
 ### Slice 002 — Runtime configuration and health
 
