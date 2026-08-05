@@ -127,9 +127,12 @@ function buildRecommendations(
   topCta: TopPattern | null,
 ): readonly string[] {
   const recommendations: string[] = [];
-  if (topHook !== null) recommendations.push(`Test hook pattern '${topHook.name}' with source evidence.`);
-  if (topAngle !== null) recommendations.push(`Prioritize angle '${topAngle.name}' in the next approved experiment.`);
-  if (topCta !== null) recommendations.push(`Evaluate CTA '${topCta.name}' without claiming conversion uplift.`);
+  if (topHook !== null)
+    recommendations.push(`Test hook pattern '${topHook.name}' with source evidence.`);
+  if (topAngle !== null)
+    recommendations.push(`Prioritize angle '${topAngle.name}' in the next approved experiment.`);
+  if (topCta !== null)
+    recommendations.push(`Evaluate CTA '${topCta.name}' without claiming conversion uplift.`);
   return Object.freeze(
     recommendations.length > 0
       ? recommendations
@@ -194,7 +197,9 @@ export function findAngleGaps(
 
   const competitorOnly = new Set([...competitors].filter((angle) => !brand.has(angle)));
   const brandOnly = new Set([...brand].filter((angle) => !competitors.has(angle)));
-  const blueOcean = new Set([...all].filter((angle) => !brand.has(angle) && !competitors.has(angle)));
+  const blueOcean = new Set(
+    [...all].filter((angle) => !brand.has(angle) && !competitors.has(angle)),
+  );
   const redOcean = new Set([...brand].filter((angle) => competitors.has(angle)));
 
   return Object.freeze({
@@ -218,26 +223,126 @@ export interface CreativeAngleDefinition {
 }
 
 export const creativeAngleCatalog: readonly CreativeAngleDefinition[] = Object.freeze([
-  { id: "free_gift", title: "Free Gift First Order", objective: "Reduce first-purchase friction", defaultCta: "Claim Gift" },
-  { id: "gift_card", title: "Gift Card", objective: "Enable recipient choice", defaultCta: "Send Gift Card" },
-  { id: "new_launch", title: "New Launch", objective: "Introduce a new product", defaultCta: "Discover New" },
-  { id: "catalog_bestsellers", title: "Catalog Bestsellers", objective: "Show proven customer choices", defaultCta: "View Bestsellers" },
-  { id: "carousel_routine", title: "Carousel Routine", objective: "Explain a step-by-step routine", defaultCta: "Build Routine" },
-  { id: "ugc_review", title: "UGC Review", objective: "Present attributable customer proof", defaultCta: "See Reviews" },
-  { id: "quiz_personalization", title: "Quiz Personalization", objective: "Guide product discovery", defaultCta: "Start Quiz" },
-  { id: "shade_match", title: "Shade Match", objective: "Reduce selection uncertainty", defaultCta: "Find Shade" },
-  { id: "mini_trial", title: "Mini Trial", objective: "Offer a low-risk trial", defaultCta: "Try Mini" },
-  { id: "bundle_stack", title: "Bundle Stack", objective: "Explain bundle value", defaultCta: "Build Bundle" },
-  { id: "loyalty", title: "Loyalty", objective: "Promote membership benefits", defaultCta: "Join Rewards" },
-  { id: "flash_gift", title: "Flash Gift 24h", objective: "Communicate a verified limited-time offer", defaultCta: "View Offer" },
-  { id: "sensitive_skin", title: "Sensitive Skin", objective: "Explain suitability with evidence", defaultCta: "View Details" },
-  { id: "clean_beauty", title: "Clean Beauty", objective: "Explain ingredient and sourcing standards", defaultCta: "Explore Ingredients" },
-  { id: "unboxing", title: "Unboxing", objective: "Show the product experience", defaultCta: "See Product" },
-  { id: "before_after", title: "Before/After", objective: "Present consented and substantiated results", defaultCta: "See Evidence" },
-  { id: "seasonal", title: "Seasonal", objective: "Connect an offer to a timely occasion", defaultCta: "Shop Collection" },
-  { id: "cart_retargeting", title: "Cart Retargeting", objective: "Remind an opted-in shopper", defaultCta: "Return to Cart" },
-  { id: "social_proof", title: "Social Proof", objective: "Summarize attributable customer evidence", defaultCta: "Read Stories" },
-  { id: "routine_comparison", title: "Routine Comparison", objective: "Compare options without unsupported superiority claims", defaultCta: "Compare Options" },
+  {
+    id: "free_gift",
+    title: "Free Gift First Order",
+    objective: "Reduce first-purchase friction",
+    defaultCta: "Claim Gift",
+  },
+  {
+    id: "gift_card",
+    title: "Gift Card",
+    objective: "Enable recipient choice",
+    defaultCta: "Send Gift Card",
+  },
+  {
+    id: "new_launch",
+    title: "New Launch",
+    objective: "Introduce a new product",
+    defaultCta: "Discover New",
+  },
+  {
+    id: "catalog_bestsellers",
+    title: "Catalog Bestsellers",
+    objective: "Show proven customer choices",
+    defaultCta: "View Bestsellers",
+  },
+  {
+    id: "carousel_routine",
+    title: "Carousel Routine",
+    objective: "Explain a step-by-step routine",
+    defaultCta: "Build Routine",
+  },
+  {
+    id: "ugc_review",
+    title: "UGC Review",
+    objective: "Present attributable customer proof",
+    defaultCta: "See Reviews",
+  },
+  {
+    id: "quiz_personalization",
+    title: "Quiz Personalization",
+    objective: "Guide product discovery",
+    defaultCta: "Start Quiz",
+  },
+  {
+    id: "shade_match",
+    title: "Shade Match",
+    objective: "Reduce selection uncertainty",
+    defaultCta: "Find Shade",
+  },
+  {
+    id: "mini_trial",
+    title: "Mini Trial",
+    objective: "Offer a low-risk trial",
+    defaultCta: "Try Mini",
+  },
+  {
+    id: "bundle_stack",
+    title: "Bundle Stack",
+    objective: "Explain bundle value",
+    defaultCta: "Build Bundle",
+  },
+  {
+    id: "loyalty",
+    title: "Loyalty",
+    objective: "Promote membership benefits",
+    defaultCta: "Join Rewards",
+  },
+  {
+    id: "flash_gift",
+    title: "Flash Gift 24h",
+    objective: "Communicate a verified limited-time offer",
+    defaultCta: "View Offer",
+  },
+  {
+    id: "sensitive_skin",
+    title: "Sensitive Skin",
+    objective: "Explain suitability with evidence",
+    defaultCta: "View Details",
+  },
+  {
+    id: "clean_beauty",
+    title: "Clean Beauty",
+    objective: "Explain ingredient and sourcing standards",
+    defaultCta: "Explore Ingredients",
+  },
+  {
+    id: "unboxing",
+    title: "Unboxing",
+    objective: "Show the product experience",
+    defaultCta: "See Product",
+  },
+  {
+    id: "before_after",
+    title: "Before/After",
+    objective: "Present consented and substantiated results",
+    defaultCta: "See Evidence",
+  },
+  {
+    id: "seasonal",
+    title: "Seasonal",
+    objective: "Connect an offer to a timely occasion",
+    defaultCta: "Shop Collection",
+  },
+  {
+    id: "cart_retargeting",
+    title: "Cart Retargeting",
+    objective: "Remind an opted-in shopper",
+    defaultCta: "Return to Cart",
+  },
+  {
+    id: "social_proof",
+    title: "Social Proof",
+    objective: "Summarize attributable customer evidence",
+    defaultCta: "Read Stories",
+  },
+  {
+    id: "routine_comparison",
+    title: "Routine Comparison",
+    objective: "Compare options without unsupported superiority claims",
+    defaultCta: "Compare Options",
+  },
 ]);
 
 export interface CreativeBrief {

@@ -43,10 +43,7 @@ test("finds angle gaps in catalog order", () => {
 
   assert.deepEqual(result.opportunities.redOcean, ["hydration"]);
   assert.deepEqual(result.opportunities.brandOnly, ["sensitive_skin"]);
-  assert.deepEqual(result.opportunities.competitorOnly, [
-    "luxury_premium",
-    "vegan_cruelty_free",
-  ]);
+  assert.deepEqual(result.opportunities.competitorOnly, ["luxury_premium", "vegan_cruelty_free"]);
 });
 
 test("creates twenty approval-gated creative plans without fake metrics", () => {
@@ -64,5 +61,8 @@ test("creates twenty approval-gated creative plans without fake metrics", () => 
     plan.every((item) => item.requiresHumanApproval && item.claimsRequireEvidence),
     true,
   );
-  assert.equal(plan.some((item) => "predictedCtr" in item || "roas" in item), false);
+  assert.equal(
+    plan.some((item) => "predictedCtr" in item || "roas" in item),
+    false,
+  );
 });

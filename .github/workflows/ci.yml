@@ -49,9 +49,7 @@ jobs:
         run: pnpm commitlint -- "$(git log -1 --pretty=%s)"
 
       - name: Check formatting
-        run: |
-          pnpm format
-          git diff --exit-code
+        run: pnpm format:check
 
       - name: Lint
         run: pnpm lint
