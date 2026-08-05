@@ -1,4 +1,10 @@
-const message = process.argv.slice(2).join(" ").trim();
+const args = process.argv.slice(2);
+
+if (args[0] === "--") {
+  args.shift();
+}
+
+const message = args.join(" ").trim();
 
 if (!message) {
   console.error("Usage: pnpm commitlint -- \"type(scope): subject\"");
