@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Build and test output
+dist/
+build/
+coverage/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.next/
+.turbo/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local data
+.data/
+data/
+uploads/
+artifacts/
+*.sqlite
+*.db
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Infrastructure state
+.terraform/
+*.tfstate
+*.tfstate.*
