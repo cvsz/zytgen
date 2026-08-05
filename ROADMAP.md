@@ -6,11 +6,13 @@ This roadmap is outcome-based. Dates are intentionally omitted until team capaci
 
 **Outcome:** the repository has an executable plan and stable boundaries.
 
-- define personas, jobs-to-be-done, product scope, and non-goals;
-- approve architecture, security model, domain boundaries, and ADRs;
-- define API/event contracts and repository structure;
-- establish coding standards, CI quality gates, threat model, and release process;
-- create local development and test environments.
+- [x] define personas, jobs-to-be-done, product scope, and non-goals;
+- [x] approve architecture, security model, and domain boundaries;
+- [x] define repository structure and implementation sequence;
+- [x] establish coding standards, CI quality gates, dependency audit, and secret scanning;
+- [ ] add typed runtime configuration, structured logging, health/readiness, and local infrastructure test environment;
+- [ ] record the initial dependency lockfile from a registry-backed install;
+- [ ] add ADRs for material technology and infrastructure choices.
 
 **Done when:** a new contributor can bootstrap, understand the system, run validation, and implement a vertical slice without inventing architecture.
 
