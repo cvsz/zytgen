@@ -8,9 +8,7 @@ export interface ComponentDescriptor {
   readonly status: "foundation";
 }
 
-export function defineComponent(
-  descriptor: ComponentDescriptor,
-): Readonly<ComponentDescriptor> {
+export function defineComponent(descriptor: ComponentDescriptor): Readonly<ComponentDescriptor> {
   const normalizedName = descriptor.name.trim();
 
   if (!normalizedName) {

@@ -7,7 +7,7 @@ if (args[0] === "--") {
 const message = args.join(" ").trim();
 
 if (!message) {
-  console.error("Usage: pnpm commitlint -- \"type(scope): subject\"");
+  console.error('Usage: pnpm commitlint -- "type(scope): subject"');
   process.exit(2);
 }
 

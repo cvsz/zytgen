@@ -3,12 +3,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: [
-      "**/dist/**",
-      "**/node_modules/**",
-      ".turbo/**",
-      "coverage/**",
-    ],
+    ignores: ["**/dist/**", "**/node_modules/**", ".turbo/**", "coverage/**"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -26,10 +21,7 @@ export default tseslint.config(
   {
     files: ["**/*.{ts,tsx}"],
     rules: {
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        { "prefer": "type-imports" },
-      ],
+      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
       "@typescript-eslint/no-explicit-any": "error",
     },
   },
