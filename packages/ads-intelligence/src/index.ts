@@ -17,6 +17,54 @@ export interface AdRecord {
   readonly source: AdSource;
 }
 
+export class AdEvidenceIntegrityError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AdEvidenceIntegrityError";
+  }
+}
+
+function assertEvidenceIntegrity(
+  ads: readonly AdRecord[],
+  dataMode: AnalysisDataMode,
+  datasetName: string,
+): void {
+  const seenIds = new Set<string>();
+
+  for (const ad of ads) {
+    const id = ad.id.trim();
+    if (id.length === 0) {
+      throw new AdEvidenceIntegrityError(`${datasetName}: ad id is required`);
+    }
+    if (seenIds.has(id)) {
+      throw new AdEvidenceIntegrityError(`${datasetName}: duplicate ad id '${id}'`);
+    }
+    seenIds.add(id);
+
+    if (Number.isNaN(Date.parse(ad.source.observedAt))) {
+      throw new AdEvidenceIntegrityError(
+        `${datasetName}: ad '${id}' has an invalid observedAt timestamp`,
+      );
+    }
+
+    if (dataMode === "observed" && ad.source.provider === "fixture") {
+      throw new AdEvidenceIntegrityError(
+        `${datasetName}: fixture source cannot be treated as observed evidence`,
+      );
+    }
+
+    if (
+      dataMode === "observed" &&
+      ad.source.provider === "meta-ad-library" &&
+      (ad.source.externalId === undefined || ad.source.externalId.trim().length === 0)
+    ) {
+      throw new AdEvidenceIntegrityError(
+        `${datasetName}: Meta Ad Library evidence requires an externalId`,
+      );
+    }
+  }
+}
+
 export interface MetaAdSearchRequest {
   readonly query: string;
   readonly country: string;
@@ -144,6 +192,7 @@ export function analyzeWinningPatterns(
   ads: readonly AdRecord[],
   dataMode: AnalysisDataMode = "observed",
 ): WinningPatternAnalysis {
+  assertEvidenceIntegrity(ads, dataMode, "winning-pattern analysis");
   const hooks = countCatalogMatches(ads, hookKeywords);
   const angles = countCatalogMatches(ads, angleKeywords);
   const ctas = countCatalogMatches(ads, ctaKeywords);
@@ -191,6 +240,17 @@ export function findAngleGaps(
   competitorAds: readonly AdRecord[],
   dataMode: AnalysisDataMode = "observed",
 ): AngleGapAnalysis {
+  assertEvidenceIntegrity(brandAds, dataMode, "brand angle-gap dataset");
+  assertEvidenceIntegrity(competitorAds, dataMode, "competitor angle-gap dataset");
+
+  const brandIds = new Set(brandAds.map((ad) => ad.id.trim()));
+  const overlap = competitorAds.find((ad) => brandIds.has(ad.id.trim()));
+  if (overlap !== undefined) {
+    throw new AdEvidenceIntegrityError(
+      `angle-gap analysis: ad id '${overlap.id.trim()}' appears in both brand and competitor datasets`,
+    );
+  }
+
   const brand = detectedAngles(brandAds);
   const competitors = detectedAngles(competitorAds);
   const all = new Set<string>(angleCatalog);
