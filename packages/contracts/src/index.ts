@@ -17,3 +17,15 @@ export function defineComponent(descriptor: ComponentDescriptor): Readonly<Compo
 
   return Object.freeze({ ...descriptor, name: normalizedName });
 }
+
+export {
+  workspaceRoles,
+  assertSameTenant,
+  canManageWorkspace,
+} from "./identity.js";
+export type {
+  WorkspaceRole,
+  Organization,
+  Workspace,
+  Membership,
+} from "./identity.js";
