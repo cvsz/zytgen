@@ -19,6 +19,9 @@ The format is based on Keep a Changelog, and the project will use semantic versi
 - GitHub Actions workflows for quality, dependency audit, and secret scanning.
 - Dependabot configuration, pull-request template, and Conventional Commit title validation.
 - Slice 001 validation record with acceptance criteria, security boundary, rollback, and deferred scope.
+- Typed API runtime configuration with fail-closed environment validation.
+- API liveness/readiness health contracts and focused tests.
+- Slice 002 validation record with acceptance criteria, security boundary, rollback, and deferred scope.
 - Product vision for a multi-channel AI Content Operations platform.
 - Modular-monolith and worker architecture baseline.
 - Outcome-based product roadmap and implementation sequence.
