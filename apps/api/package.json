@@ -7,12 +7,17 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./src/server.ts",
+      "default": "./dist/server.js"
     }
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "clean": "node ../../scripts/clean.mjs",
     "lint": "eslint src test",
+    "start": "node dist/server.js",
     "test": "node --test test/*.test.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
