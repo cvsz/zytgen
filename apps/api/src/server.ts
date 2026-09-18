@@ -5,6 +5,8 @@ import { loadRuntimeConfig, type RuntimeConfig } from "./config.js";
 
 const MAX_BODY_BYTES = 1_048_576;
 const ALLOWED_METHODS = "GET,POST,PUT,PATCH,DELETE,OPTIONS";
+const SERVICE_NAME = "zytgen-api";
+const SERVICE_VERSION = "0.0.0";
 
 function json(res: ServerResponse, status: number, body: unknown, requestId: string): void {
   const payload = JSON.stringify(body);
@@ -62,15 +64,15 @@ export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
       }
 
       if (url.pathname === "/health/live" && method === "GET") {
-        json(res, 200, liveness(), id);
+        json(res, 200, liveness(SERVICE_NAME, SERVICE_VERSION), id);
         return;
       }
       if (url.pathname === "/health/ready" && method === "GET") {
-        json(res, 200, readiness(), id);
+        json(res, 200, readiness(SERVICE_NAME, SERVICE_VERSION, { process: "ok" }), id);
         return;
       }
       if (url.pathname === "/api/v1" && method === "GET") {
-        json(res, 200, { service: "zytgen-api", version: "v1", environment: config.nodeEnv }, id);
+        json(res, 200, { service: SERVICE_NAME, version: "v1", environment: config.nodeEnv }, id);
         return;
       }
       if (url.pathname === "/api/v1/echo" && method === "POST") {
@@ -80,7 +82,12 @@ export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
           return;
         }
         let parsed: unknown;
-        try { parsed = JSON.parse(raw); } catch { json(res, 400, { error: { code: "INVALID_JSON", message: "Request body must be valid JSON" } }, id); return; }
+        try {
+          parsed = JSON.parse(raw);
+        } catch {
+          json(res, 400, { error: { code: "INVALID_JSON", message: "Request body must be valid JSON" } }, id);
+          return;
+        }
         json(res, 200, { data: parsed }, id);
         return;
       }
@@ -99,8 +106,14 @@ export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
 export async function startApiServer(config: RuntimeConfig = loadRuntimeConfig()): Promise<ReturnType<typeof createApiServer>> {
   const server = createApiServer(config);
   await new Promise<void>((resolve, reject) => {
-    const onError = (error: Error) => { server.off("listening", onListening); reject(error); };
-    const onListening = () => { server.off("error", onError); resolve(); };
+    const onError = (error: Error) => {
+      server.off("listening", onListening);
+      reject(error);
+    };
+    const onListening = () => {
+      server.off("error", onError);
+      resolve();
+    };
     server.once("error", onError);
     server.once("listening", onListening);
     server.listen(config.port, config.host);
