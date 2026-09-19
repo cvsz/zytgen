@@ -13,6 +13,7 @@
     "build": "tsc -p tsconfig.build.json",
     "clean": "node ../../scripts/clean.mjs",
     "lint": "eslint src test",
+    "start": "node dist/start.js",
     "test": "node --test test/*.test.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
