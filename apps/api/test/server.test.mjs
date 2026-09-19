@@ -41,6 +41,19 @@ test("unknown routes return a stable error envelope", async () => withServer(asy
   assert.deepEqual(await response.json(), { error: { code: "NOT_FOUND", message: "Route not found" } });
 }));
 
+test("known routes reject unsupported methods", async () => withServer(async (base) => {
+  const response = await fetch(`${base}/health/live`, { method: "POST" });
+  assert.equal(response.status, 405);
+  assert.equal(response.headers.get("allow"), "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  assert.deepEqual(await response.json(), { error: { code: "METHOD_NOT_ALLOWED", message: "Method not allowed" } });
+}));
+
+test("JSON endpoint rejects unsupported media types", async () => withServer(async (base) => {
+  const response = await fetch(`${base}/api/v1/echo`, { method: "POST", headers: { "content-type": "text/plain" }, body: "{}" });
+  assert.equal(response.status, 415);
+  assert.deepEqual(await response.json(), { error: { code: "UNSUPPORTED_MEDIA_TYPE", message: "Content-Type must be application/json" } });
+}));
+
 test("JSON endpoint rejects malformed payloads", async () => withServer(async (base) => {
   const response = await fetch(`${base}/api/v1/echo`, { method: "POST", headers: { "content-type": "application/json" }, body: "{" });
   assert.equal(response.status, 400);
