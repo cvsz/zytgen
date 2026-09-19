@@ -76,6 +76,11 @@ export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
         return;
       }
       if (url.pathname === "/api/v1/echo" && method === "POST") {
+        const contentType = req.headers["content-type"] ?? "";
+        if (!contentType.toLowerCase().startsWith("application/json")) {
+          json(res, 415, { error: { code: "UNSUPPORTED_MEDIA_TYPE", message: "Content-Type must be application/json" } }, id);
+          return;
+        }
         const raw = await readBody(req);
         if (!raw) {
           json(res, 400, { error: { code: "EMPTY_BODY", message: "Request body is required" } }, id);
@@ -92,6 +97,11 @@ export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
         return;
       }
 
+      const knownPath = url.pathname === "/health/live" || url.pathname === "/health/ready" || url.pathname === "/api/v1" || url.pathname === "/api/v1/echo";
+      if (knownPath) {
+        json(res, 405, { error: { code: "METHOD_NOT_ALLOWED", message: "Method not allowed" } }, id);
+        return;
+      }
       json(res, 404, { error: { code: "NOT_FOUND", message: "Route not found" } }, id);
     } catch (error) {
       if (error instanceof Error && error.message === "PAYLOAD_TOO_LARGE") {
