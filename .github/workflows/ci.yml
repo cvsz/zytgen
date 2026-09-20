@@ -64,6 +64,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Build production container
+        run: docker build --pull --tag zytgen:ci .
+
   security:
     name: Supply-chain and secret checks
     runs-on: ubuntu-latest
