@@ -25,10 +25,13 @@ function parseEnvironment(value: string | undefined): RuntimeConfig["nodeEnv"] {
 }
 
 export function loadRuntimeConfig(env: NodeJS.ProcessEnv = process.env): RuntimeConfig {
+  const nodeEnv = parseEnvironment(env.NODE_ENV);
+  const defaultHost = nodeEnv === "production" ? "0.0.0.0" : "127.0.0.1";
+
   return Object.freeze({
-    nodeEnv: parseEnvironment(env.NODE_ENV),
+    nodeEnv,
     port: parsePositiveInteger("PORT", env.PORT, DEFAULT_PORT),
-    host: env.HOST?.trim() || "127.0.0.1",
+    host: env.HOST?.trim() || defaultHost,
     shutdownTimeoutMs: parsePositiveInteger(
       "SHUTDOWN_TIMEOUT_MS",
       env.SHUTDOWN_TIMEOUT_MS,
