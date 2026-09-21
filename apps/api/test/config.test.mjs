@@ -11,6 +11,15 @@ test("runtime config defaults safely for local development", () => {
   });
 });
 
+test("runtime config defaults production to a container-reachable host", () => {
+  assert.deepEqual(loadRuntimeConfig({ NODE_ENV: "production" }), {
+    nodeEnv: "production",
+    port: 3000,
+    host: "0.0.0.0",
+    shutdownTimeoutMs: 10_000,
+  });
+});
+
 test("runtime config accepts explicit production values", () => {
   assert.deepEqual(loadRuntimeConfig({
     NODE_ENV: "production",
