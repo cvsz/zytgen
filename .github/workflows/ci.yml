@@ -67,6 +67,31 @@ jobs:
       - name: Build production container
         run: docker build --pull --tag zytgen:ci .
 
+      - name: Smoke-test production container
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          container_id="$(docker run --detach --publish 3000:3000 zytgen:ci)"
+          cleanup() {
+            docker logs "$container_id" || true
+            docker rm --force "$container_id" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:3000/health/live >/dev/null; then
+              break
+            fi
+            if [[ "$attempt" -eq 30 ]]; then
+              echo "Container did not become live within the timeout" >&2
+              exit 1
+            fi
+            sleep 1
+          done
+
+          curl --fail --silent --show-error http://127.0.0.1:3000/health/live >/dev/null
+          curl --fail --silent --show-error http://127.0.0.1:3000/health/ready >/dev/null
+
   security:
     name: Supply-chain and secret checks
     runs-on: ubuntu-latest
