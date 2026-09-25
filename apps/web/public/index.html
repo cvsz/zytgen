@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1220" />
+    <meta name="description" content="zytgen AI Content Operations workspace" />
+    <title>zytgen — Content Operations</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <a class="brand" href="#overview" aria-label="zytgen home"><span class="brand-mark">z</span><span>zytgen</span></a>
+        <nav>
+          <p class="nav-label">Workspace</p>
+          <a class="nav-item active" href="#overview">Overview</a>
+          <a class="nav-item" href="#ideas">Content ideas</a>
+          <a class="nav-item" href="#calendar">Calendar</a>
+          <a class="nav-item" href="#assets">Assets</a>
+          <a class="nav-item" href="#analytics">Analytics</a>
+          <p class="nav-label">Intelligence</p>
+          <a class="nav-item" href="#ads">Ads intelligence</a>
+          <a class="nav-item" href="#ai">AI studio</a>
+          <p class="nav-label">Manage</p>
+          <a class="nav-item" href="#settings">Settings</a>
+        </nav>
+        <div class="sidebar-footer"><span class="status-dot"></span><span>All systems operational</span></div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div><button class="mobile-menu" type="button" aria-label="Open navigation">☰</button><span class="workspace-name">Acme Workspace</span><span class="workspace-role">Owner</span></div>
+          <div class="top-actions"><button class="icon-button" type="button" aria-label="Notifications">◔</button><button class="avatar" type="button" aria-label="Account">P</button></div>
+        </header>
+
+        <section id="overview" class="content">
+          <div class="hero-row"><div><p class="eyebrow">AI Content Operations</p><h1>Good morning. Let's ship.</h1><p class="subhead">Plan, create, review, publish, and learn from one workspace.</p></div><button class="primary" type="button" data-action="create">＋ Create content</button></div>
+
+          <div class="metrics" aria-label="Workspace metrics">
+            <article class="metric-card"><span>Published this month</span><strong>24</strong><small class="positive">↑ 18% vs last month</small></article>
+            <article class="metric-card"><span>In review</span><strong>7</strong><small>3 need your approval</small></article>
+            <article class="metric-card"><span>AI jobs</span><strong>92%</strong><small class="positive">Healthy completion rate</small></article>
+            <article class="metric-card"><span>Audience growth</span><strong>+12.4%</strong><small class="positive">Across connected channels</small></article>
+          </div>
+
+          <div class="grid-two">
+            <section class="panel"><div class="panel-head"><div><h2>Content pipeline</h2><p>Current production workload</p></div><a href="#ideas">View all</a></div><div class="pipeline"><div><span class="pipeline-count">12</span><span>Ideas</span></div><div><span class="pipeline-count">8</span><span>Drafts</span></div><div><span class="pipeline-count">7</span><span>Review</span></div><div><span class="pipeline-count">5</span><span>Scheduled</span></div></div></section>
+            <section class="panel"><div class="panel-head"><div><h2>Next up</h2><p>Your upcoming work</p></div><a href="#calendar">Calendar</a></div><ul class="activity"><li><span class="activity-icon">✦</span><div><strong>Approve launch campaign</strong><small>Today · 14:00</small></div><span class="badge review">Review</span></li><li><span class="activity-icon">▶</span><div><strong>Short-form video batch</strong><small>Today · 16:30</small></div><span class="badge scheduled">Scheduled</span></li><li><span class="activity-icon">◎</span><div><strong>Weekly performance report</strong><small>Tomorrow · 09:00</small></div><span class="badge ai">AI job</span></li></ul></section>
+          </div>
+
+          <section class="panel feature-panel"><div class="panel-head"><div><h2>AI Content Studio</h2><p>Turn a brief into channel-ready content while keeping review and evidence gates in place.</p></div><span class="badge live">Available</span></div><div class="studio-grid"><button data-action="idea"><span>✦</span><strong>Generate ideas</strong><small>Hooks, angles and concepts</small></button><button data-action="script"><span>▣</span><strong>Write a script</strong><small>Structured, editable drafts</small></button><button data-action="video"><span>▶</span><strong>Create video</strong><small>Assets, voice and captions</small></button><button data-action="analyze"><span>◌</span><strong>Analyze ads</strong><small>Evidence-backed intelligence</small></button></div></section>
+
+          <div class="grid-two"><section class="panel"><div class="panel-head"><div><h2>Channel health</h2><p>Connected publishing destinations</p></div><a href="#settings">Manage</a></div><div class="channels"><div><span class="channel-icon youtube">Y</span><span>YouTube</span><strong>Healthy</strong></div><div><span class="channel-icon tiktok">♪</span><span>TikTok</span><strong>Healthy</strong></div><div><span class="channel-icon instagram">◎</span><span>Instagram</span><strong>Healthy</strong></div><div><span class="channel-icon linkedin">in</span><span>LinkedIn</span><strong>Healthy</strong></div></div></section><section class="panel"><div class="panel-head"><div><h2>Runtime</h2><p>Platform service health</p></div></div><div id="runtime-status" class="runtime-status" role="status">Checking runtime…</div></section></div>
+        </section>
+      </main>
+    </div>
+    <dialog id="create-dialog"><form method="dialog"><h2>Create content</h2><p>Choose a starting point for your next workflow.</p><div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="ideas" class="primary">Start with ideas</button></div></form></dialog>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

@@ -7,8 +7,21 @@
 ## Before coding
 
 - Read `README.md`, `ARCHITECTURE.md`, `ROADMAP.md`, `SECURITY.md`, and `docs/exec-planning.md`.
-- Check existing issues, pull requests, and feature status.
+- Check existing issues, pull requests, CI, and feature status.
 - Define acceptance criteria, affected contracts, authorization rules, failure handling, rollout, and rollback.
+
+## Local bootstrap
+
+Use Node.js 24 LTS and pnpm 11:
+
+```bash
+corepack enable
+pnpm install --no-frozen-lockfile
+pnpm check
+pnpm security:audit
+```
+
+The initial lockfile is intentionally deferred until a registry-backed install records it. Do not describe installs as frozen or reproducible until `pnpm-lock.yaml` is committed and CI switches to `--frozen-lockfile`.
 
 ## Branch and commit conventions
 
@@ -19,7 +32,19 @@ Suggested branch names:
 - `docs/<topic>`
 - `chore/<maintenance>`
 
-Use clear, imperative commit messages. Prefer conventional prefixes such as `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, and `chore:`.
+Commit subjects and pull-request titles use Conventional Commits:
+
+```text
+feat(scope): lowercase imperative subject
+fix(scope): lowercase imperative subject
+ci: add repository quality gates
+```
+
+Allowed types are `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, and `test`. Validate a title locally with:
+
+```bash
+pnpm commitlint -- "feat(scope): describe the change"
+```
 
 ## Pull request requirements
 

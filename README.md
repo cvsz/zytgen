@@ -2,7 +2,7 @@
 
 `zytgen` is evolving from a YouTube channel generator into a production-grade, multi-channel AI Content Operations platform. The product unifies content research, ideation, scripting, asset generation, approval, scheduling, publishing, analytics, and sales-assisted conversations in one workspace.
 
-> Project status: architecture and delivery foundation. External platform integrations and automated publishing are not yet production-ready.
+> Project status: repository and CI foundation with a deterministic Ads Intelligence domain. External platform integrations and automated publishing are not yet production-ready.
 
 ## Product vision
 
@@ -22,11 +22,53 @@ Build a secure Content OS for creators, brands, agencies, and commerce teams tha
 |---|---|
 | Content workspace | Ideas, briefs, scripts, assets, versions, approvals |
 | AI orchestration | Provider-neutral model routing, prompts, jobs, evaluations |
-| Intelligence | Trend monitoring, competitor tracking, hook vault, content gaps |
+| Intelligence | Trend monitoring, competitor tracking, hook vault, content gaps, Ads Intelligence |
 | Publishing | Calendar, scheduler, channel adapters, retries, audit trail |
 | Analytics | Content metrics, campaign attribution, conversion and revenue views |
 | Sales automation | Inbox ingestion, suggested replies, qualification and handoff |
 | Platform | Multi-tenant workspaces, RBAC, quotas, secrets, audit and observability |
+
+## Repository foundation
+
+The current scaffold uses a pnpm workspace and Turborepo to coordinate independently buildable components:
+
+```text
+apps/
+  web/                 # static dashboard shell for foundation validation
+  api/                 # API/BFF package boundary
+  worker/              # durable-worker package boundary
+packages/
+  contracts/           # shared typed contracts
+  ads-intelligence/    # deterministic ad-pattern, angle-gap, and creative-plan domain
+scripts/               # repository automation and policy checks
+docs/validation/       # slice validation records
+```
+
+Each workspace exposes `build`, `lint`, `typecheck`, and `test` commands. Root commands run the same quality gates locally and in GitHub Actions.
+
+## Consolidated advertising intelligence
+
+The reusable domain concepts from `cvsz/zadsystem` now live in `@zytgen/ads-intelligence`.
+The migration retains source provenance, pattern analysis, angle gaps, and the 20-angle creative
+catalog while excluding random performance metrics, unsupported claims, tracked secrets, and
+insecure demo infrastructure. See
+[docs/migration/zadsystem-consolidation.md](docs/migration/zadsystem-consolidation.md).
+
+## Bootstrap
+
+Prerequisites:
+
+- Node.js 24 LTS;
+- pnpm 11.20 or newer within major version 11.
+
+```bash
+corepack enable
+pnpm install --no-frozen-lockfile
+pnpm check
+pnpm security:audit
+```
+
+The repository does not yet commit a generated lockfile. Tool versions are pinned, and CI intentionally uses `--no-frozen-lockfile` until a registry-backed install records the initial lockfile.
 
 ## Architecture direction
 
@@ -51,7 +93,7 @@ PostgreSQL + Outbox + Queue + Object Storage + Search/Vector Index
 Workers and external platform adapters
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md), [ROADMAP.md](ROADMAP.md), and [docs/exec-planning.md](docs/exec-planning.md).
+See [ARCHITECTURE.md](ARCHITECTURE.md), [ROADMAP.md](ROADMAP.md), [docs/exec-planning.md](docs/exec-planning.md), and [docs/validation/slice-001.md](docs/validation/slice-001.md).
 
 ## Delivery principles
 
@@ -61,31 +103,11 @@ See [ARCHITECTURE.md](ARCHITECTURE.md), [ROADMAP.md](ROADMAP.md), and [docs/exec
 4. Connectors are isolated behind stable internal interfaces.
 5. No feature is marked complete without validation evidence.
 6. Each pull request delivers one complete vertical slice.
-
-## Planned repository layout
-
-```text
-apps/
-  web/                 # dashboard and workspace UI
-  api/                 # public API and BFF
-  worker/              # durable background execution
-packages/
-  contracts/           # schemas and API contracts
-  domain/              # domain model and policies
-  ai/                  # provider-neutral AI interfaces
-  connectors/          # social, commerce, ads, storage adapters
-  observability/       # logging, metrics and tracing
-infra/
-  docker/
-  kubernetes/
-docs/
-  adr/
-  runbooks/
-```
+7. Analytics and recommendations identify fixture, observed, and simulated data explicitly.
 
 ## Current milestone
 
-**Foundation:** finalize domain boundaries, contracts, security controls, execution plan, and initial project scaffold before implementing external publishing or autonomous actions.
+**Foundation:** Slice 001 establishes the repository workspace and quality gates. The Ads Intelligence consolidation adds a source-backed deterministic domain package. Slice 002 adds typed runtime configuration, structured logging, request IDs, and health/readiness behavior.
 
 ## License
 

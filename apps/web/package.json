@@ -1,0 +1,16 @@
+{
+  "name": "@zytgen/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ../../scripts/copy-web-assets.mjs && tsc -p tsconfig.build.json",
+    "clean": "node ../../scripts/clean.mjs",
+    "lint": "eslint src test",
+    "test": "node --test test/*.test.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

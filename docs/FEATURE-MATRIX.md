@@ -4,8 +4,8 @@ Status values: `planned`, `foundation`, `in-progress`, `beta`, `production`.
 
 | Domain | Capability | Status | Target phase | Completion evidence |
 |---|---|---:|---:|---|
-| Platform | Repository/CI scaffold | planned | 0 | local bootstrap and green CI |
-| Platform | Typed configuration and health | planned | 0 | startup validation and readiness tests |
+| Platform | Repository/CI scaffold | foundation | 0 | `docs/validation/slice-001.md` and green CI |
+| Platform | Typed configuration and health | in-progress | 0 | `docs/validation/slice-002.md`, startup validation, readiness tests, and green CI |
 | Identity | Organizations and workspaces | planned | 1 | CRUD, membership and isolation tests |
 | Identity | RBAC and service accounts | planned | 1 | policy matrix and negative authorization tests |
 | Brand | Brand profile and knowledge | planned | 1 | versioned knowledge sources and retrieval tests |
@@ -16,9 +16,12 @@ Status values: `planned`, `foundation`, `in-progress`, `beta`, `production`.
 | AI | Text generation and structured output | planned | 2 | deterministic and production adapter tests |
 | AI | Durable jobs and fallback | planned | 2 | retry, cancel, idempotency and outage tests |
 | AI | Image/audio/video generation | planned | 2+ | workload-specific validation and policy gates |
+| Intelligence | Ads pattern and angle-gap domain | foundation | 3 | `docs/validation/zadsystem-consolidation.md` and package tests |
+| Intelligence | Meta Ad Library live adapter | planned | 3 | pagination, rate-limit, retry and provenance tests |
 | Intelligence | Trend ingestion | planned | 3 | source/freshness provenance tests |
 | Intelligence | Competitor tracking | planned | 3 | policy-compliant source adapters |
 | Intelligence | Hook vault and content gaps | planned | 3 | explainable scoring and search tests |
+| Planning | Twenty-angle creative plan | foundation | 3 | deterministic catalog and approval-policy tests |
 | Planning | Campaign and content calendar | planned | 3 | multi-channel planning workflow |
 | Publishing | YouTube connector | planned | 4 | sandbox/live reconciliation evidence |
 | Publishing | TikTok connector | planned | 4 | platform approval and connector tests |

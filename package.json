@@ -1,0 +1,33 @@
+{
+  "name": "zytgen",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Production-grade AI Content Operations platform",
+  "license": "MIT",
+  "packageManager": "pnpm@11.20.0",
+  "engines": {
+    "node": ">=24.17.0 <27",
+    "pnpm": ">=11.20.0 <12"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "clean": "node scripts/clean.mjs && turbo run clean",
+    "dev": "turbo watch build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "security:audit": "pnpm audit --audit-level high",
+    "commitlint": "node scripts/validate-commit-message.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.8.0",
+    "prettier": "3.9.6",
+    "turbo": "2.10.8",
+    "typescript": "7.0.2",
+    "typescript-eslint": "8.65.0"
+  }
+}
