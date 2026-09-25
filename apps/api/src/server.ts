@@ -1,70 +1,167 @@
-import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { randomUUID } from "node:crypto";
+import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import { liveness, readiness } from "./health.js";
 import { loadRuntimeConfig, type RuntimeConfig } from "./config.js";
-import { liveness, readiness, type HealthResponse } from "./health.js";
 
+const MAX_BODY_BYTES = 1_048_576;
+const ALLOWED_METHODS = "GET,POST,PUT,PATCH,DELETE,OPTIONS";
 const SERVICE_NAME = "zytgen-api";
 const SERVICE_VERSION = "0.0.0";
 
-function writeJson(response: ServerResponse, statusCode: number, body: unknown, requestId: string): void {
+function json(res: ServerResponse, status: number, body: unknown, requestId: string): void {
   const payload = JSON.stringify(body);
-  response.statusCode = statusCode;
-  response.setHeader("content-type", "application/json; charset=utf-8");
-  response.setHeader("cache-control", "no-store");
-  response.setHeader("x-request-id", requestId);
-  response.end(payload);
+  res.writeHead(status, {
+    "content-type": "application/json; charset=utf-8",
+    "content-length": Buffer.byteLength(payload),
+    "cache-control": "no-store",
+    "x-request-id": requestId,
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "no-referrer",
+    "content-security-policy": "default-src 'none'; frame-ancestors 'none'",
+    "strict-transport-security": "max-age=31536000; includeSubDomains",
+    allow: ALLOWED_METHODS,
+  });
+  res.end(payload);
 }
 
-function requestIdFrom(request: IncomingMessage): string {
-  const incoming = request.headers["x-request-id"];
-  if (typeof incoming === "string" && /^[A-Za-z0-9._:-]{1,128}$/.test(incoming)) return incoming;
+function requestId(req: IncomingMessage): string {
+  const supplied = req.headers["x-request-id"];
+  if (typeof supplied === "string" && /^[A-Za-z0-9._:-]{1,128}$/.test(supplied)) return supplied;
   return randomUUID();
 }
 
-function route(request: IncomingMessage, response: ServerResponse, requestId: string): void {
-  const url = new URL(request.url ?? "/", "http://localhost");
-  const method = request.method ?? "GET";
-
-  if (method !== "GET" && method !== "HEAD") {
-    writeJson(response, 405, { error: "method_not_allowed", requestId }, requestId);
-    return;
+async function readBody(req: IncomingMessage): Promise<string> {
+  const contentLength = Number(req.headers["content-length"] ?? 0);
+  if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES)
+    throw new Error("PAYLOAD_TOO_LARGE");
+  const chunks: Buffer[] = [];
+  let size = 0;
+  for await (const chunk of req) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    size += buffer.length;
+    if (size > MAX_BODY_BYTES) throw new Error("PAYLOAD_TOO_LARGE");
+    chunks.push(buffer);
   }
-
-  let body: HealthResponse | { service: string; version: string; requestId: string };
-  if (url.pathname === "/health/live") {
-    body = liveness(SERVICE_NAME, SERVICE_VERSION);
-  } else if (url.pathname === "/health/ready") {
-    body = readiness(SERVICE_NAME, SERVICE_VERSION, { runtime: "ok" });
-  } else if (url.pathname === "/v1/metadata") {
-    body = { service: SERVICE_NAME, version: SERVICE_VERSION, requestId };
-  } else {
-    writeJson(response, 404, { error: "not_found", requestId }, requestId);
-    return;
-  }
-
-  if (method === "HEAD") {
-    response.statusCode = 200;
-    response.setHeader("content-type", "application/json; charset=utf-8");
-    response.setHeader("cache-control", "no-store");
-    response.setHeader("x-request-id", requestId);
-    response.end();
-    return;
-  }
-
-  writeJson(response, 200, body, requestId);
+  return Buffer.concat(chunks).toString("utf8");
 }
 
-export function createApiServer(_config: RuntimeConfig = loadRuntimeConfig()): Server {
-  return createServer((request, response) => {
-    const requestId = requestIdFrom(request);
-    response.setHeader("x-content-type-options", "nosniff");
-    response.setHeader("x-frame-options", "DENY");
-    response.setHeader("referrer-policy", "no-referrer");
-    route(request, response, requestId);
+export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
+  return createServer(async (req, res) => {
+    const id = requestId(req);
+    const method = req.method ?? "GET";
+    let url: URL;
+    try {
+      url = new URL(req.url ?? "/", "http://localhost");
+    } catch {
+      json(
+        res,
+        400,
+        { error: { code: "INVALID_REQUEST_TARGET", message: "Request target is invalid" } },
+        id,
+      );
+      return;
+    }
+
+    try {
+      if (method === "OPTIONS") {
+        res.writeHead(204, {
+          "access-control-allow-methods": ALLOWED_METHODS,
+          "access-control-allow-headers": "content-type, authorization, x-request-id",
+          "access-control-max-age": "600",
+          "x-request-id": id,
+        });
+        res.end();
+        return;
+      }
+
+      if (url.pathname === "/health/live" && method === "GET") {
+        json(res, 200, liveness(SERVICE_NAME, SERVICE_VERSION), id);
+        return;
+      }
+      if (url.pathname === "/health/ready" && method === "GET") {
+        json(res, 200, readiness(SERVICE_NAME, SERVICE_VERSION, { process: "ok" }), id);
+        return;
+      }
+      if (url.pathname === "/api/v1" && method === "GET") {
+        json(res, 200, { service: SERVICE_NAME, version: "v1", environment: config.nodeEnv }, id);
+        return;
+      }
+      if (url.pathname === "/api/v1/echo" && method === "POST") {
+        const contentType = req.headers["content-type"] ?? "";
+        if (!contentType.toLowerCase().startsWith("application/json")) {
+          json(
+            res,
+            415,
+            {
+              error: {
+                code: "UNSUPPORTED_MEDIA_TYPE",
+                message: "Content-Type must be application/json",
+              },
+            },
+            id,
+          );
+          return;
+        }
+        const raw = await readBody(req);
+        if (!raw) {
+          json(
+            res,
+            400,
+            { error: { code: "EMPTY_BODY", message: "Request body is required" } },
+            id,
+          );
+          return;
+        }
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(raw);
+        } catch {
+          json(
+            res,
+            400,
+            { error: { code: "INVALID_JSON", message: "Request body must be valid JSON" } },
+            id,
+          );
+          return;
+        }
+        json(res, 200, { data: parsed }, id);
+        return;
+      }
+
+      const knownPath =
+        url.pathname === "/health/live" ||
+        url.pathname === "/health/ready" ||
+        url.pathname === "/api/v1" ||
+        url.pathname === "/api/v1/echo";
+      if (knownPath) {
+        json(
+          res,
+          405,
+          { error: { code: "METHOD_NOT_ALLOWED", message: "Method not allowed" } },
+          id,
+        );
+        return;
+      }
+      json(res, 404, { error: { code: "NOT_FOUND", message: "Route not found" } }, id);
+    } catch (error) {
+      if (error instanceof Error && error.message === "PAYLOAD_TOO_LARGE") {
+        json(
+          res,
+          413,
+          { error: { code: "PAYLOAD_TOO_LARGE", message: "Request body exceeds 1 MiB" } },
+          id,
+        );
+        return;
+      }
+      json(res, 500, { error: { code: "INTERNAL_ERROR", message: "Internal server error" } }, id);
+    }
   });
 }
 
-export async function startApiServer(config: RuntimeConfig = loadRuntimeConfig()): Promise<Server> {
+export async function startApiServer(
+  config: RuntimeConfig = loadRuntimeConfig(),
+): Promise<ReturnType<typeof createApiServer>> {
   const server = createApiServer(config);
   await new Promise<void>((resolve, reject) => {
     const onError = (error: Error) => {
@@ -80,23 +177,4 @@ export async function startApiServer(config: RuntimeConfig = loadRuntimeConfig()
     server.listen(config.port, config.host);
   });
   return server;
-}
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const config = loadRuntimeConfig();
-  const server = await startApiServer(config);
-  const address = server.address();
-  const bound = typeof address === "object" && address ? `${address.address}:${address.port}` : "unknown";
-  process.stdout.write(`zytgen API listening on ${bound}\n`);
-
-  const shutdown = (signal: string) => {
-    const timer = setTimeout(() => process.exit(1), config.shutdownTimeoutMs);
-    timer.unref();
-    server.close(() => {
-      clearTimeout(timer);
-      process.exit(0);
-    });
-  };
-  process.once("SIGINT", () => shutdown("SIGINT"));
-  process.once("SIGTERM", () => shutdown("SIGTERM"));
 }

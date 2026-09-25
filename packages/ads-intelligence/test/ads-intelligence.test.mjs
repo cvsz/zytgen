@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  AdEvidenceIntegrityError,
   analyzeWinningPatterns,
   createCreativePlan,
   creativeAngleCatalog,
@@ -10,11 +11,11 @@ import {
 
 const source = { provider: "fixture", observedAt: "2026-08-06T00:00:00Z" };
 
-const ad = (id, creativeBody, linkCaption = "") => ({
+const ad = (id, creativeBody, linkCaption = "", adSource = source) => ({
   id,
   creativeBody,
   linkCaption,
-  source,
+  source: adSource,
 });
 
 test("analyzes deterministic source-backed patterns", () => {
@@ -44,6 +45,71 @@ test("finds angle gaps in catalog order", () => {
   assert.deepEqual(result.opportunities.redOcean, ["hydration"]);
   assert.deepEqual(result.opportunities.brandOnly, ["sensitive_skin"]);
   assert.deepEqual(result.opportunities.competitorOnly, ["luxury_premium", "vegan_cruelty_free"]);
+});
+
+test("rejects fixture records masquerading as observed evidence", () => {
+  assert.throws(
+    () => analyzeWinningPatterns([ad("fixture-observed", "new launch")]),
+    (error) =>
+      error instanceof AdEvidenceIntegrityError &&
+      /fixture source cannot be treated as observed evidence/.test(error.message),
+  );
+});
+
+test("rejects duplicate ad ids before pattern counting", () => {
+  assert.throws(
+    () => analyzeWinningPatterns([ad("duplicate", "ใหม่"), ad("duplicate", "ซื้อเลย")], "fixture"),
+    (error) => error instanceof AdEvidenceIntegrityError && /duplicate ad id/.test(error.message),
+  );
+});
+
+test("rejects invalid evidence timestamps", () => {
+  assert.throws(
+    () =>
+      analyzeWinningPatterns(
+        [ad("bad-time", "ใหม่", "", { provider: "fixture", observedAt: "not-a-date" })],
+        "fixture",
+      ),
+    (error) =>
+      error instanceof AdEvidenceIntegrityError &&
+      /invalid observedAt timestamp/.test(error.message),
+  );
+});
+
+test("requires attributable Meta Ad Library identity for observed evidence", () => {
+  assert.throws(
+    () =>
+      analyzeWinningPatterns([
+        ad("meta-no-id", "new product", "", {
+          provider: "meta-ad-library",
+          observedAt: "2026-09-13T00:00:00Z",
+        }),
+      ]),
+    (error) =>
+      error instanceof AdEvidenceIntegrityError && /requires an externalId/.test(error.message),
+  );
+});
+
+test("accepts attributable Meta Ad Library observed evidence", () => {
+  const result = analyzeWinningPatterns([
+    ad("meta-local-id", "new product shop now", "", {
+      provider: "meta-ad-library",
+      externalId: "meta-123",
+      observedAt: "2026-09-13T00:00:00Z",
+    }),
+  ]);
+
+  assert.equal(result.dataMode, "observed");
+  assert.equal(result.totalAdsAnalyzed, 1);
+});
+
+test("rejects the same evidence record on both sides of an angle comparison", () => {
+  assert.throws(
+    () => findAngleGaps([ad("same-record", "ชุ่มชื้น")], [ad("same-record", "premium")], "fixture"),
+    (error) =>
+      error instanceof AdEvidenceIntegrityError &&
+      /appears in both brand and competitor/.test(error.message),
+  );
 });
 
 test("creates twenty approval-gated creative plans without fake metrics", () => {
