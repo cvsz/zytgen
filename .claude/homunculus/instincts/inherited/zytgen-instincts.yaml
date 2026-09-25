@@ -1,107 +1,63 @@
 # Instincts generated from https://github.com/cvsz/zytgen
 # Generated: 2026-08-05T20:56:15.653Z
 # Version: 2.0
-# NOTE: This file supplements (does not replace) any existing curated instincts.
-# High-confidence manually curated instincts should be preserved alongside these.
-
+# This file supplements, rather than replaces, curated instincts.
+# Preserve high-confidence manual instincts alongside these generated entries.
 ---
 id: zytgen-commit-conventional
-trigger: "when writing a commit message"
+trigger: when writing a commit message
 confidence: 0.85
 domain: git
 source: repo-analysis
 source_repo: https://github.com/cvsz/zytgen
----
-
-# Zytgen Commit Conventional
-
-## Action
-
-Use conventional commit format with prefixes: ci, fix
-
-## Evidence
-
-- 2 commits analyzed
-- Detected conventional commit pattern
-- Examples: ci(scaffold): establish repository quality gates, fix(ci): defer pnpm caching until lockfile
-
+action: Use conventional commit format with prefixes ci and fix.
+evidence:
+  commits_analyzed: 2
+  summary: Detected conventional commit pattern.
+  examples:
+    - "ci(scaffold): establish repository quality gates"
+    - "fix(ci): defer pnpm caching until lockfile"
 ---
 id: zytgen-commit-length
-trigger: "when writing a commit message"
+trigger: when writing a commit message
 confidence: 0.6
 domain: git
 source: repo-analysis
 source_repo: https://github.com/cvsz/zytgen
----
-
-# Zytgen Commit Length
-
-## Action
-
-Keep commit messages concise (~45 characters)
-
-## Evidence
-
-- Average commit message length: 45 chars
-- Based on 2 commits
-
+action: Keep commit messages concise at about 45 characters.
+evidence:
+  average_subject_length: 45
+  commits_analyzed: 2
 ---
 id: zytgen-naming-files
-trigger: "when creating a new file"
+trigger: when creating a new file
 confidence: 0.8
 domain: code-style
 source: repo-analysis
 source_repo: https://github.com/cvsz/zytgen
----
-
-# Zytgen Naming Files
-
-## Action
-
-Use camelCase naming convention
-
-## Evidence
-
-- Analyzed file naming patterns in repository
-- Dominant pattern: camelCase
-
+action: Use camelCase naming convention.
+evidence:
+  summary: Analyzed file naming patterns in repository.
+  dominant_pattern: camelCase
 ---
 id: zytgen-export-style
-trigger: "when exporting from a module"
+trigger: when exporting from a module
 confidence: 0.7
 domain: code-style
 source: repo-analysis
 source_repo: https://github.com/cvsz/zytgen
----
-
-# Zytgen Export Style
-
-## Action
-
-Prefer named exports
-
-## Evidence
-
-- Export pattern analysis
-- Dominant style: named
-
+action: Prefer named exports.
+evidence:
+  summary: Export pattern analysis.
+  dominant_style: named
 ---
 id: zytgen-test-naming
-trigger: "when creating a test file"
+trigger: when creating a test file
 confidence: 0.85
 domain: testing
 source: repo-analysis
 source_repo: https://github.com/cvsz/zytgen
----
-
-# Zytgen Test Naming
-
-## Action
-
-Name test files using the pattern: *.test.ts
-
-## Evidence
-
-- File pattern: *.test.ts
-- Consistent across test files
-
+action: Name test files using the pattern *.test.ts.
+evidence:
+  file_pattern: "*.test.ts"
+  summary: Consistent across test files.

@@ -33,7 +33,8 @@ function requestId(req: IncomingMessage): string {
 
 async function readBody(req: IncomingMessage): Promise<string> {
   const contentLength = Number(req.headers["content-length"] ?? 0);
-  if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) throw new Error("PAYLOAD_TOO_LARGE");
+  if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES)
+    throw new Error("PAYLOAD_TOO_LARGE");
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of req) {
@@ -78,34 +79,68 @@ export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
       if (url.pathname === "/api/v1/echo" && method === "POST") {
         const contentType = req.headers["content-type"] ?? "";
         if (!contentType.toLowerCase().startsWith("application/json")) {
-          json(res, 415, { error: { code: "UNSUPPORTED_MEDIA_TYPE", message: "Content-Type must be application/json" } }, id);
+          json(
+            res,
+            415,
+            {
+              error: {
+                code: "UNSUPPORTED_MEDIA_TYPE",
+                message: "Content-Type must be application/json",
+              },
+            },
+            id,
+          );
           return;
         }
         const raw = await readBody(req);
         if (!raw) {
-          json(res, 400, { error: { code: "EMPTY_BODY", message: "Request body is required" } }, id);
+          json(
+            res,
+            400,
+            { error: { code: "EMPTY_BODY", message: "Request body is required" } },
+            id,
+          );
           return;
         }
         let parsed: unknown;
         try {
           parsed = JSON.parse(raw);
         } catch {
-          json(res, 400, { error: { code: "INVALID_JSON", message: "Request body must be valid JSON" } }, id);
+          json(
+            res,
+            400,
+            { error: { code: "INVALID_JSON", message: "Request body must be valid JSON" } },
+            id,
+          );
           return;
         }
         json(res, 200, { data: parsed }, id);
         return;
       }
 
-      const knownPath = url.pathname === "/health/live" || url.pathname === "/health/ready" || url.pathname === "/api/v1" || url.pathname === "/api/v1/echo";
+      const knownPath =
+        url.pathname === "/health/live" ||
+        url.pathname === "/health/ready" ||
+        url.pathname === "/api/v1" ||
+        url.pathname === "/api/v1/echo";
       if (knownPath) {
-        json(res, 405, { error: { code: "METHOD_NOT_ALLOWED", message: "Method not allowed" } }, id);
+        json(
+          res,
+          405,
+          { error: { code: "METHOD_NOT_ALLOWED", message: "Method not allowed" } },
+          id,
+        );
         return;
       }
       json(res, 404, { error: { code: "NOT_FOUND", message: "Route not found" } }, id);
     } catch (error) {
       if (error instanceof Error && error.message === "PAYLOAD_TOO_LARGE") {
-        json(res, 413, { error: { code: "PAYLOAD_TOO_LARGE", message: "Request body exceeds 1 MiB" } }, id);
+        json(
+          res,
+          413,
+          { error: { code: "PAYLOAD_TOO_LARGE", message: "Request body exceeds 1 MiB" } },
+          id,
+        );
         return;
       }
       json(res, 500, { error: { code: "INTERNAL_ERROR", message: "Internal server error" } }, id);
@@ -113,7 +148,9 @@ export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
   });
 }
 
-export async function startApiServer(config: RuntimeConfig = loadRuntimeConfig()): Promise<ReturnType<typeof createApiServer>> {
+export async function startApiServer(
+  config: RuntimeConfig = loadRuntimeConfig(),
+): Promise<ReturnType<typeof createApiServer>> {
   const server = createApiServer(config);
   await new Promise<void>((resolve, reject) => {
     const onError = (error: Error) => {
