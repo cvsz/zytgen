@@ -21,17 +21,20 @@ test("runtime config defaults production to a container-reachable host", () => {
 });
 
 test("runtime config accepts explicit production values", () => {
-  assert.deepEqual(loadRuntimeConfig({
-    NODE_ENV: "production",
-    PORT: "8080",
-    HOST: "0.0.0.0",
-    SHUTDOWN_TIMEOUT_MS: "5000",
-  }), {
-    nodeEnv: "production",
-    port: 8080,
-    host: "0.0.0.0",
-    shutdownTimeoutMs: 5000,
-  });
+  assert.deepEqual(
+    loadRuntimeConfig({
+      NODE_ENV: "production",
+      PORT: "8080",
+      HOST: "0.0.0.0",
+      SHUTDOWN_TIMEOUT_MS: "5000",
+    }),
+    {
+      nodeEnv: "production",
+      port: 8080,
+      host: "0.0.0.0",
+      shutdownTimeoutMs: 5000,
+    },
+  );
 });
 
 test("runtime config rejects invalid environment values", () => {

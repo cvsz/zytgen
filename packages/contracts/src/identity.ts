@@ -19,7 +19,11 @@ export interface Membership {
   readonly role: WorkspaceRole;
 }
 
-export function assertSameTenant(membership: Membership, organizationId: string, workspaceId: string): void {
+export function assertSameTenant(
+  membership: Membership,
+  organizationId: string,
+  workspaceId: string,
+): void {
   if (membership.organizationId !== organizationId || membership.workspaceId !== workspaceId) {
     throw new Error("Cross-tenant access denied");
   }

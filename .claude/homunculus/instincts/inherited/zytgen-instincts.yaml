@@ -1,0 +1,63 @@
+# Instincts generated from https://github.com/cvsz/zytgen
+# Generated: 2026-08-05T20:56:15.653Z
+# Version: 2.0
+# This file supplements, rather than replaces, curated instincts.
+# Preserve high-confidence manual instincts alongside these generated entries.
+---
+id: zytgen-commit-conventional
+trigger: when writing a commit message
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: https://github.com/cvsz/zytgen
+action: Use conventional commit format with prefixes ci and fix.
+evidence:
+  commits_analyzed: 2
+  summary: Detected conventional commit pattern.
+  examples:
+    - "ci(scaffold): establish repository quality gates"
+    - "fix(ci): defer pnpm caching until lockfile"
+---
+id: zytgen-commit-length
+trigger: when writing a commit message
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/cvsz/zytgen
+action: Keep commit messages concise at about 45 characters.
+evidence:
+  average_subject_length: 45
+  commits_analyzed: 2
+---
+id: zytgen-naming-files
+trigger: when creating a new file
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/cvsz/zytgen
+action: Use camelCase naming convention.
+evidence:
+  summary: Analyzed file naming patterns in repository.
+  dominant_pattern: camelCase
+---
+id: zytgen-export-style
+trigger: when exporting from a module
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/cvsz/zytgen
+action: Prefer named exports.
+evidence:
+  summary: Export pattern analysis.
+  dominant_style: named
+---
+id: zytgen-test-naming
+trigger: when creating a test file
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/cvsz/zytgen
+action: Name test files using the pattern *.test.ts.
+evidence:
+  file_pattern: "*.test.ts"
+  summary: Consistent across test files.
