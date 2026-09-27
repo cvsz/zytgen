@@ -46,7 +46,7 @@ async function readBody(req: IncomingMessage): Promise<string> {
 }
 
 export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
-  return createServer(async (req, res) => {
+  const server = createServer(async (req, res) => {
     const id = requestId(req);
     const method = req.method ?? "GET";
     const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
@@ -111,6 +111,13 @@ export function createApiServer(config: RuntimeConfig = loadRuntimeConfig()) {
       json(res, 500, { error: { code: "INTERNAL_ERROR", message: "Internal server error" } }, id);
     }
   });
+
+  // Bound connection/request lifetimes to reduce slow-client resource exhaustion.
+  server.requestTimeout = 30_000;
+  server.headersTimeout = 15_000;
+  server.keepAliveTimeout = 5_000;
+  server.maxRequestsPerSocket = 1_000;
+  return server;
 }
 
 export async function startApiServer(config: RuntimeConfig = loadRuntimeConfig()): Promise<ReturnType<typeof createApiServer>> {
