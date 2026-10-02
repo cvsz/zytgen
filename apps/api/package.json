@@ -21,6 +21,7 @@
     "@zytgen/contracts": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "24.13.6",
     "typescript": "catalog:"
   }
 }
