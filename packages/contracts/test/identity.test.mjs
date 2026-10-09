@@ -16,8 +16,14 @@ test("tenant assertion rejects cross-organization and cross-workspace access", (
   };
 
   assert.doesNotThrow(() => identity.assertSameTenant(membership, "org-a", "ws-a"));
-  assert.throws(() => identity.assertSameTenant(membership, "org-b", "ws-a"), /Cross-tenant access denied/);
-  assert.throws(() => identity.assertSameTenant(membership, "org-a", "ws-b"), /Cross-tenant access denied/);
+  assert.throws(
+    () => identity.assertSameTenant(membership, "org-b", "ws-a"),
+    /Cross-tenant access denied/,
+  );
+  assert.throws(
+    () => identity.assertSameTenant(membership, "org-a", "ws-b"),
+    /Cross-tenant access denied/,
+  );
 });
 
 test("only owner and admin can manage a workspace", () => {

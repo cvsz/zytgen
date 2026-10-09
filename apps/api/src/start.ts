@@ -15,4 +15,12 @@ const shutdown = async (signal: string) => {
 process.once("SIGTERM", () => void shutdown("SIGTERM"));
 process.once("SIGINT", () => void shutdown("SIGINT"));
 
-console.log(JSON.stringify({ level: "info", event: "server_started", host: config.host, port: config.port, environment: config.nodeEnv }));
+console.log(
+  JSON.stringify({
+    level: "info",
+    event: "server_started",
+    host: config.host,
+    port: config.port,
+    environment: config.nodeEnv,
+  }),
+);
