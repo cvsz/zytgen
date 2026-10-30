@@ -12,7 +12,7 @@ This roadmap is outcome-based. Dates are intentionally omitted until team capaci
 - [x] establish coding standards, CI quality gates, dependency audit, and secret scanning;
 - [x] consolidate `zadsystem` domain concepts into a typed, deterministic Ads Intelligence package;
 - [ ] add typed runtime configuration, structured logging, health/readiness, and local infrastructure test environment;
-- [ ] record the initial dependency lockfile from a registry-backed install;
+- [x] record the initial dependency lockfile from a registry-backed install;
 - [ ] add ADRs for material technology and infrastructure choices.
 
 **Done when:** a new contributor can bootstrap, understand the system, run validation, and implement a vertical slice without inventing architecture.

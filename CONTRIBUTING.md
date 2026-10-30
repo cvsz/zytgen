@@ -16,12 +16,12 @@ Use Node.js 24 LTS and pnpm 11:
 
 ```bash
 corepack enable
-pnpm install --no-frozen-lockfile
+pnpm install --frozen-lockfile
 pnpm check
 pnpm security:audit
 ```
 
-The initial lockfile is intentionally deferred until a registry-backed install records it. Do not describe installs as frozen or reproducible until `pnpm-lock.yaml` is committed and CI switches to `--frozen-lockfile`.
+Keep `pnpm-lock.yaml` committed and use frozen installs so local and CI dependency resolution stays consistent.
 
 ## Branch and commit conventions
 
