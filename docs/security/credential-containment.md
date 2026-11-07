@@ -28,6 +28,17 @@ Record the following in a restricted operator incident/evidence system:
 - relevant audit-event identifiers and investigation conclusion;
 - remaining repositories requiring remediation.
 
+## Closure criteria
+
+Do not close the associated security issue solely because these files are absent from a branch. Closure requires all of the following:
+
+- the removal is merged through the accepted signed-source and independent-review process;
+- the legacy workflows are absent from the protected default branch;
+- affected credentials are revoked/rotated as required and old-token rejection is verified;
+- the private audit investigation has a recorded disposition;
+- the default branch requires independent approval, CODEOWNERS review for security-sensitive paths, and required exact-head checks without ordinary-user bypass;
+- no other active repository in the propagation inventory retains the same unsafe reviewer workflow.
+
 ## Admission
 
-Keep this remediation in Draft until exact-head CI/security checks, signed provenance, independent human review, and operator credential-disposition evidence are complete. Do not bypass branch protection or force-push protected history.
+Keep this remediation in Draft until full exact-head CI/security checks, signed provenance, independent human review, and operator credential-disposition evidence are complete. Do not bypass branch protection or force-push protected history.
