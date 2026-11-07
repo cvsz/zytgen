@@ -58,11 +58,7 @@ test("rejects fixture records masquerading as observed evidence", () => {
 
 test("rejects duplicate ad ids before pattern counting", () => {
   assert.throws(
-    () =>
-      analyzeWinningPatterns(
-        [ad("duplicate", "ใหม่"), ad("duplicate", "ซื้อเลย")],
-        "fixture",
-      ),
+    () => analyzeWinningPatterns([ad("duplicate", "ใหม่"), ad("duplicate", "ซื้อเลย")], "fixture"),
     (error) => error instanceof AdEvidenceIntegrityError && /duplicate ad id/.test(error.message),
   );
 });
@@ -75,7 +71,8 @@ test("rejects invalid evidence timestamps", () => {
         "fixture",
       ),
     (error) =>
-      error instanceof AdEvidenceIntegrityError && /invalid observedAt timestamp/.test(error.message),
+      error instanceof AdEvidenceIntegrityError &&
+      /invalid observedAt timestamp/.test(error.message),
   );
 });
 
@@ -108,14 +105,10 @@ test("accepts attributable Meta Ad Library observed evidence", () => {
 
 test("rejects the same evidence record on both sides of an angle comparison", () => {
   assert.throws(
-    () =>
-      findAngleGaps(
-        [ad("same-record", "ชุ่มชื้น")],
-        [ad("same-record", "premium")],
-        "fixture",
-      ),
+    () => findAngleGaps([ad("same-record", "ชุ่มชื้น")], [ad("same-record", "premium")], "fixture"),
     (error) =>
-      error instanceof AdEvidenceIntegrityError && /appears in both brand and competitor/.test(error.message),
+      error instanceof AdEvidenceIntegrityError &&
+      /appears in both brand and competitor/.test(error.message),
   );
 });
 

@@ -11,7 +11,7 @@ COPY apps ./apps
 COPY packages ./packages
 COPY scripts ./scripts
 
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 RUN pnpm --filter @zytgen/api... build
 
 FROM node:24.17.0-bookworm-slim AS runtime
@@ -24,6 +24,7 @@ RUN groupadd --system --gid 10001 zytgen && useradd --system --uid 10001 --gid 1
 
 COPY --from=build --chown=zytgen:zytgen /app/node_modules ./node_modules
 COPY --from=build --chown=zytgen:zytgen /app/apps/api/package.json ./apps/api/package.json
+COPY --from=build --chown=zytgen:zytgen /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=build --chown=zytgen:zytgen /app/apps/api/dist ./apps/api/dist
 COPY --from=build --chown=zytgen:zytgen /app/packages/contracts/package.json ./packages/contracts/package.json
 COPY --from=build --chown=zytgen:zytgen /app/packages/contracts/dist ./packages/contracts/dist

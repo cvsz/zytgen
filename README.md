@@ -63,12 +63,12 @@ Prerequisites:
 
 ```bash
 corepack enable
-pnpm install --no-frozen-lockfile
+pnpm install --frozen-lockfile
 pnpm check
 pnpm security:audit
 ```
 
-The repository does not yet commit a generated lockfile. Tool versions are pinned, and CI intentionally uses `--no-frozen-lockfile` until a registry-backed install records the initial lockfile.
+The repository commits `pnpm-lock.yaml`; bootstrap and CI use frozen installs for reproducible dependency resolution.
 
 ## Architecture direction
 

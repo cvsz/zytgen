@@ -43,6 +43,6 @@ The pull request CI run is the authoritative validation environment because it i
 
 ## Deferred intentionally
 
-- a committed dependency lockfile is deferred until the first registry-backed install can generate it; direct tool versions are pinned and CI does not claim frozen-lockfile reproducibility yet;
+- at the time of this validation, a committed dependency lockfile was deferred until the first registry-backed install; it was added later and current bootstrap/CI use frozen installs;
 - typed runtime configuration, structured logging, request IDs, and health/readiness endpoints belong to Slice 002;
 - tenant isolation, authorization, persistence, jobs, and provider adapters remain planned.
